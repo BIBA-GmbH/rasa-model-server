@@ -17,6 +17,7 @@ def index():
  
 @app.route('/<path:path>', methods=['GET'])
 def serve(path):
+    
     fetch_latest = '@latest' in path
     real_path = join(models_dir, path.replace('@latest', ''))
     
@@ -24,11 +25,15 @@ def serve(path):
         return 'Not Found', 404
 
     if isdir(real_path):
+
         if fetch_latest:
             latest_entry = Scaner(real_path).latest_entry
+            
             if not latest_entry:
                 return 'No Models Found', 404
+            
             return download_file(latest_entry.path)
+        
         else:
             return list_dir(real_path)
     else:
@@ -38,7 +43,8 @@ def serve(path):
 def list_dir(path):
     rel_path = relpath(path, models_dir)
     parent_path = dirname(rel_path)
-    return render_template('index.html', sep=sep, parent_path=parent_path, path=rel_path, entries=Scaner(path).entries)
+    entries = Scaner(path).entries
+    return render_template('index.html', sep=sep, parent_path=parent_path, path=rel_path, entries=entries)
 
 def download_file(path):
     return send_from_directory(
