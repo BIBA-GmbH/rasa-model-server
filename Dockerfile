@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-MAINTAINER Victor Rachieru
+LABEL maintainer="Victor Rachieru"
 
 WORKDIR /app
 COPY . .
