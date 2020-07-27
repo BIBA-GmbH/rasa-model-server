@@ -8,6 +8,9 @@ from filesystem import Scaner
 
 app = Flask(__name__)
 
+# https://flask.palletsprojects.com/en/1.1.x/config/#SEND_FILE_MAX_AGE_DEFAULT
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
+
 @app.route('/', methods=['GET'])
 def index():
     return list_dir(models_dir)
@@ -38,7 +41,13 @@ def list_dir(path):
     return render_template('index.html', sep=sep, parent_path=parent_path, path=rel_path, entries=Scaner(path).entries)
 
 def download_file(path):
-    return send_from_directory(dirname(path), basename(path), as_attachment=True, attachment_filename=basename(path))
+    return send_from_directory(
+        dirname(path),
+        basename(path),
+        as_attachment=True,
+        attachment_filename=basename(path),
+        cache_timeout=0
+    )
 
 
 if __name__ == '__main__':
