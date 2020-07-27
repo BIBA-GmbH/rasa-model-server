@@ -24,11 +24,14 @@
             <tr>
                 <td>
                     <a href="{{ url_for('serve', path=entry.rel_path) | replace('%5C', '/') }}">
-                        {{ entry.name|truncate(50, True) }}{% if entry.is_dir %}{{ sep }}{% endif %}
+                        {{ entry.name|truncate(50, True) }}
+                        {% if entry.is_dir %}{{ sep }}
+                        {% elif loop.index == 1 %} @latest 
+                        {% endif %}
                     </a>
                 </td>
-                <td>{{ entry.created_time }}</td>
-                <td>{{ entry.modified_time }}</td>
+                <td>{{ entry.created_time.ctime() }}</td>
+                <td>{{ entry.modified_time.ctime() }}</td>
                 <td>{{ entry.size }}</td>
             </tr>
             {% endfor %}
