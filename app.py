@@ -23,6 +23,9 @@ def serve(path):
     
     if not exists(real_path):
         return 'Not Found', 404
+    
+    if ".." in real_path:
+        return 'Not Found', 404
 
     if isdir(real_path):
 
