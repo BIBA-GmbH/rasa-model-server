@@ -1,6 +1,6 @@
 FROM python:3-alpine
 
-LABEL maintainer="Victor Rachieru"
+LABEL maintainer="BIBA - Bremer Institut für Produktion und Logistik GmbH"
 
 WORKDIR /app
 COPY . .
