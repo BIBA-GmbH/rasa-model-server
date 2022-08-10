@@ -1,4 +1,7 @@
-from flask import Flask, render_template, send_from_directory
+import os
+
+from flask import Flask, render_template, send_from_directory, abort, request
+
 from os import sep
 from os.path import isdir, dirname, basename, relpath, join, exists
 
@@ -45,6 +48,21 @@ def serve(path):
         return download_file(real_path)
 
 
+@app.route("/files/<filename>", methods=["POST"])
+def post_file(filename):
+    """Upload a file."""
+
+    if "/" in filename:
+        # Return 400 BAD REQUEST
+        abort(400, "no subdirectories allowed")
+
+    with open(os.path.join(models_dir, filename), "wb") as fp:
+        fp.write(request.data)
+
+    # Return 201 CREATED
+    return "", 201
+
+
 def list_dir(path):
     rel_path = relpath(path, models_dir)
     parent_path = dirname(rel_path)
@@ -57,8 +75,8 @@ def download_file(path):
         dirname(path),
         basename(path),
         as_attachment=True,
-        attachment_filename=basename(path),
-        cache_timeout=0
+        download_name=basename(path),
+        max_age=0
     )
 
 
