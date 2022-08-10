@@ -11,19 +11,21 @@ app = Flask(__name__)
 # https://flask.palletsprojects.com/en/1.1.x/config/#SEND_FILE_MAX_AGE_DEFAULT
 app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
+
 @app.route('/', methods=['GET'])
 def index():
     return list_dir(models_dir)
- 
+
+
 @app.route('/<path:path>', methods=['GET'])
 def serve(path):
-    
+
     fetch_latest = '@latest' in path
     real_path = join(models_dir, path.replace('@latest', ''))
-    
+
     if not exists(real_path):
         return 'Not Found', 404
-    
+
     if ".." in real_path:
         return 'Not Found', 404
 
@@ -31,12 +33,12 @@ def serve(path):
 
         if fetch_latest:
             latest_entry = Scaner(real_path).latest_entry
-            
+
             if not latest_entry:
                 return 'No Models Found', 404
-            
+
             return download_file(latest_entry.path)
-        
+
         else:
             return list_dir(real_path)
     else:
@@ -48,6 +50,7 @@ def list_dir(path):
     parent_path = dirname(rel_path)
     entries = Scaner(path).entries
     return render_template('index.html', sep=sep, parent_path=parent_path, path=rel_path, entries=entries)
+
 
 def download_file(path):
     return send_from_directory(
