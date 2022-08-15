@@ -136,6 +136,7 @@ curl -X POST -F "model=@model.tar.gz" -H "Content-Type: multipart/form-data" "ht
 
 * Add security token to access the server's endpoints.
 * Add a front end that supports all features in app.py
+* Add tests for different requests to check if abort clauses trigger correctly.
 
 ## Change history
 
