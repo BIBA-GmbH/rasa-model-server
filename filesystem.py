@@ -2,7 +2,7 @@ from datetime import datetime
 from os import scandir, listdir, DirEntry
 from os.path import isfile, isdir, relpath, join, getsize
 
-from config import models_dir
+from config import download_folder
 
 class Scaner:
     def __init__(self, path):
@@ -22,7 +22,7 @@ class Entry:
         self.name = entry.name.decode()
         
         self.path = entry.path.decode()
-        self.rel_path = relpath(self.path, models_dir)
+        self.rel_path = relpath(self.path, download_folder)
         
         self.is_dir = entry.is_dir()
 
