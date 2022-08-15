@@ -1,3 +1,4 @@
+from logging import Logger
 import os
 
 from flask import Flask, render_template, send_from_directory, abort, request
@@ -16,6 +17,7 @@ from config import (
 
 from filesystem import Scaner
 
+log = Logger(__name__)
 
 app = Flask(__name__)
 
@@ -31,17 +33,22 @@ def index():
     return list_dir(download_folder)
 
 
-@app.route('/<path:path>', methods=['GET'])
+@app.route('/models/<path:path>', methods=['GET'])
 def download_file(path):
 
     fetch_latest = '@latest' in path
     real_path = join(download_folder, path.replace('@latest', ''))
 
     if not exists(real_path):
-        return 'Not Found', 404
+        log.warn('Access attempt for file that does not exist.')
+        abort(404, 'Not Found')
 
+    # Avoids unallowed navigation through folders.
+    # TODO Check if this is every accessed:
+    # TODO /../model.tar.gz never triggers this condition.
     if ".." in real_path:
-        return 'Not Found', 404
+        log.warn(f'Access attempt with /.. in {real_path}.')
+        abort(404, 'Not Found')
 
     if isdir(real_path):
 
@@ -49,7 +56,7 @@ def download_file(path):
             latest_entry = Scaner(real_path).latest_entry
 
             if not latest_entry:
-                return 'No model found', 404
+                abort(404, 'No model found')
 
             return securly_serve_file(latest_entry.path)
 
@@ -64,23 +71,13 @@ def download_file(path):
 def upload_file(filename):
     if request.method == 'POST':
 
-        print(request.__dict__)
-
-        # check if the request has data (the file).
+        # Check if the request has data (the file).
+        # TODO Not sure if this is necessary or caught automatically in Flask.
         if request.files['model']:
             file = request.files['model']
         else:
             # Return 400 BAD REQUEST.
-            abort('No model file in request', 400)
-
-        # If the request contains empty file name.
-        if filename == '':
-            # Return 400 BAD REQUEST
-            abort('File name empty', 400)
-
-        if "/" in filename:
-            # Return 400 BAD REQUEST.
-            abort(400, "No sub-directories allowed")
+            abort(400, 'No model file in request')
 
         # If file extension not allowed.
         if file and allowed_file(filename):
@@ -90,12 +87,10 @@ def upload_file(filename):
             # Return 201 CREATED.
             return "", 201
         else:
-
-            print(request.form)
             # Return 400 BAD REQUEST.
-            abort(400, "Extension not allowed.")
+            abort(400, 'Extension not allowed')
     else:
-        abort(400, "Only POST requests allowed.")
+        abort(400, 'Only POST requests allowed.')
 
 
 def list_dir(path):
@@ -117,8 +112,8 @@ def securly_serve_file(path):
     ''' Serves the requested file securly. '''
 
     return send_from_directory(
-        dirname(path),
-        basename(path),
+        directory=dirname(path),
+        path=basename(path),
         as_attachment=True,
         download_name=basename(path),
         max_age=0
