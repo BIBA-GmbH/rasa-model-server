@@ -4,7 +4,6 @@ variables:
   DOCKER_TLS_CERTDIR: ""
   DOCKER_HOST: tcp://docker:2375
   MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
-  RASA_IMAGE: rasa/rasa:$RASA_VERSION-full
 
 # Needed for jobs that build Docker images.
 services:
@@ -15,7 +14,7 @@ build-image:
   stage: build
   image: docker:stable
   variables:
-    IMAGE: $DOCKER_REGISTRY/$PROJECT/$RASA_ACTION_SERVER_IMAGE_NAME
+    IMAGE: $DOCKER_REGISTRY/$PROJECT/$MODEL_SERVER_IMAGE_NAME
   rules:
     - if: '$CI_COMMIT_BRANCH == "biba-extensions"'
   before_script:
