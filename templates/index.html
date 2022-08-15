@@ -16,14 +16,14 @@
             {% if path != '.' %}
             <tr>
                 <td>
-                    <a href="{{ url_for('serve', path=parent_path) | replace('%5C', '/') }}">..{{ sep }}</a>
+                    <a href="{{ url_for('download_file', path=parent_path) | replace('%5C', '/') }}">..{{ sep }}</a>
                 </td>
             </tr>
             {% endif %}
             {% for entry in entries %}
             <tr>
                 <td>
-                    <a href="{{ url_for('serve', path=entry.rel_path) | replace('%5C', '/') }}">
+                    <a href="{{ url_for('download_file', path=entry.rel_path) | replace('%5C', '/') }}">
                         {{ entry.name|truncate(50, True) }}
                         {% if entry.is_dir %}{{ sep }}
                         {% elif loop.index == 1 %} @latest 

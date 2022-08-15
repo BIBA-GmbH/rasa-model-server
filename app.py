@@ -21,7 +21,7 @@ def index():
 
 
 @app.route('/<path:path>', methods=['GET'])
-def serve(path):
+def download_file(path):
 
     fetch_latest = '@latest' in path
     real_path = join(models_dir, path.replace('@latest', ''))
