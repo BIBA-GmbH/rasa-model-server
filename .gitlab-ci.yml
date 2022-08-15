@@ -1,0 +1,28 @@
+
+
+build-image:
+  stage: build
+  image: docker:stable
+  variables:
+    IMAGE: $DOCKER_REGISTRY/$PROJECT/$RASA_ACTION_SERVER_IMAGE_NAME
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "biba-extensions"'
+  before_script:
+    - docker info
+    - docker login --username $DOCKER_REGISTRY_USER --password $DOCKER_REGISTRY_PASSWORD $DOCKER_REGISTRY
+  script:
+    - sleep 5
+    # Add label information dynamically.
+    - sed -i "s/git.commit.hash=""/git.commit.hash=$CI_COMMIT_SHA/g" Dockerfile
+    - sed -i "s/git.commit.branch=""/git.commit.branch=$CI_COMMIT_BRANCH/g" Dockerfile
+    - echo "Added labels to image."
+    - docker build -t $IMAGE:$CI_COMMIT_SHA -t $IMAGE:latest -f Dockerfile .
+    - echo "Build completed."
+    - docker push $IMAGE:$CI_COMMIT_SHA
+    - docker push $IMAGE:latest
+    - echo "Build pushed."
+  after_script:
+    - docker logout
+  tags:
+    - i4q_docker
+
