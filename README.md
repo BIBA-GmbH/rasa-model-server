@@ -140,7 +140,7 @@ curl -X POST -F "model=@model.tar.gz" -H "Content-Type: multipart/form-data" "ht
 
 ## Change history
 
-1.2.0
+### 1.2.0
 
 * Added model upload via POST request Stefan Wellsandt, BIBA - Bremer Institut für Produktion und Logistik GmbH
 * Extended config.py file
@@ -148,11 +148,13 @@ curl -X POST -F "model=@model.tar.gz" -H "Content-Type: multipart/form-data" "ht
 * Adding some detailed comments
 * Updated the readme file (e.g. added change history)
 
-1.1.0
-Several updates by Guilherme Guy
-Added '..' path check to improve security by Daniel Gabardo
+### 1.1.0
 
-1.0.0
+* Several updates by Guilherme Guy
+* Added '..' path check to improve security by Daniel Gabardo
+
+### 1.0.0
+
 Initial version provided by Victor Rachieru with model download and model index (list)
 
 ## License
