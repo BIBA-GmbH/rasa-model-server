@@ -1,3 +1,5 @@
+# Documentation
+
 <p align="center">
     <img src="https://user-images.githubusercontent.com/5860071/61949755-7dbca580-afb4-11e9-87b6-1187933cccfb.png" width="200" border="0" alt="rasa-model-server">
     <br/>
@@ -14,41 +16,49 @@
     Simple webserver for externalizing RASA models.
 </p>
 
-### About
+## About
 
-You can [configure RASA to fetch models](https://rasa.com/docs/rasa/user-guide/running-the-server/#fetching-models-from-a-server) from this server either by:  
-1. pointing to a specific model (`.tar.gz`) and overriding said file when you want the model to change  
-`http://localhost:8080/bot/model.tar.gz`  
-2. pointing to a folder (suffixing the url with `@latest`) containing multiple models (`.tar.gz`) and getting the latest model sorted by modified date  
-`http://localhost:8080/bot@latest`
+You can [configure RASA to fetch models](https://rasa.com/docs/rasa/user-guide/running-the-server/#fetching-models-from-a-server) from this server in two ways.
 
-### Quick start
+### Get a specific model
 
-I recommend pulling the [latest image](https://hub.docker.com/r/vrachieru/rasa-model-server/) from Docker hub as this is the easiest way:
+Pointing to a specific model (`.tar.gz`) and overriding said file when you want the model to change.
+`http://localhost:8080/models/model.tar.gz`  
+
+### Get the latest model
+
+Pointing to a folder (suffixing the url with `@latest`) containing multiple models (`.tar.gz`) and getting the latest model sorted by modified date.
+`http://localhost:8080/models/@latest`
+
+### Upload a model
+
+You can upload models via POST requests that you send during a CI/CD RASA model training job.
+If you choose a model name that exists on the server, the new one overwrites the old one.
+
+## Quick start
+
+Build a Docker image from this repository.
+
 ```bash
-$ docker pull vrachieru/rasa-model-server
-```
-
-If you'd like, you can build the Docker image yourself:
-```bash
-docker build -t <yourname>/rasa-model-server .
+docker build -t rasa-model-server .
 ```
 
 Specify your desired configuration and run the container:
+
 ```bash
-$ docker run -<d|i> --rm \
+docker run -<d|i> --rm \
     -v /host/path/to/models:/app/models \
     -p <host_port>:8080 \
-    vrachieru/rasa-model-server
+    rasa-model-server
 ```
 
-You can stop the container using: 
+You can stop the container using:
+
 ```bash
-$ docker stop rasa-model-server
+docker stop rasa-model-server
 ```
 
-
-### Configuration
+## Configuration
 
 You can configure the service via the following environment variables.
 
@@ -57,12 +67,15 @@ You can configure the service via the following environment variables.
 | PORT                  | 8080          | Port on which to run the webserver.                     |
 | MODELS_DIR            | models        | The absolute or relative location of the models folder. |
 
+## Examples
 
-### Example
+### Get model
 
 Fetch a model without specifying a `If-None-Match` header.
-```
-$ curl -s -I 'http://localhost:8080/bot/model.tar.gz'
+
+``` Bash
+curl -s -I 'http://localhost:8080/models/model.tar.gz'
+
 HTTP/1.0 200 OK
 Content-Disposition: attachment; filename=model.tar.gz
 Content-Length: 6478848
@@ -77,8 +90,10 @@ Server: Werkzeug/0.14.1 Python/3.6.3
 ```
 
 Once the model is loaded by RASA, subsequent requests will use the received ETAG to check if the model has been updated.
-```
-$ curl -s -I 'http://localhost:8080/bot/model.tar.gz' -H 'If-None-Match: 1556022523.364716-6478848-1948524791'
+
+``` Bash
+curl -s -I 'http://localhost:8080/models/model.tar.gz' -H 'If-None-Match: 1556022523.364716-6478848-1948524791'
+
 HTTP/1.0 304 NOT MODIFIED
 Content-Disposition: attachment; filename=model.tar.gz
 Cache-Control: public, max-age=43200
@@ -90,8 +105,10 @@ Server: Werkzeug/0.14.1 Python/3.6.3
 ```
 
 Update the model on the server an the next request will pull the new model upon ETag mismatch.
-```
-$ curl -s -I 'http://localhost:8080/bot/model.tar.gz' -H 'If-None-Match: 1556022523.364716-6478848-1948524791'
+
+``` Bash
+curl -s -I 'http://localhost:8080/models/model.tar.gz' -H 'If-None-Match: 1556022523.364716-6478848-1948524791'
+
 HTTP/1.0 200 OK
 Content-Disposition: attachment; filename=model.tar.gz
 Content-Length: 900
@@ -105,6 +122,38 @@ Accept-Ranges: bytes
 Server: Werkzeug/0.14.1 Python/3.6.3
 ```
 
-### License
+### Upload model
+
+Upload a model to the server using a POST request.
+
+``` Bash
+
+curl -X POST -F "model=@model.tar.gz" -H "Content-Type: multipart/form-data" "http://localhost:8080/models/model.tar.gz"
+
+```
+
+## Roadmap
+
+* Add security token to access the server's endpoints.
+* Add a front end that supports all features in app.py
+
+## Change history
+
+1.2.0
+
+* Added model upload via POST request Stefan Wellsandt, BIBA - Bremer Institut für Produktion und Logistik GmbH
+* Extended config.py file
+* Updated deprecated parts related to Flask 2.1.0
+* Adding some detailed comments
+* Updated the readme file (e.g. added change history)
+
+1.1.0
+Several updates by Guilherme Guy
+Added '..' path check to improve security by Daniel Gabardo
+
+1.0.0
+Initial version provided by Victor Rachieru with model download and model index (list)
+
+## License
 
 MIT
