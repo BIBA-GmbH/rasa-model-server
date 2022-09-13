@@ -7,7 +7,7 @@ server_port = environ.get('PORT', 8080)
 download_folder = environ.get('DOWNLOAD_FOLDER', 'models')
 
 # --- Upload-related variables.
-# Default upload folder is the model's folder.
+# Default upload folder is the "models" folder.
 upload_folder = environ.get('UPLOAD_FOLDER', download_folder)
 
 allowed_extension = environ.get(
