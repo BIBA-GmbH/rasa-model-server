@@ -1,9 +1,9 @@
 # Documentation
 
 <p align="center">
-    <img src="https://user-images.githubusercontent.com/5860071/61949755-7dbca580-afb4-11e9-87b6-1187933cccfb.png" width="200" border="0" alt="rasa-model-server">
+    <b>Rasa model server with upload endpoint</b>
     <br/>
-    <a href="https://github.com/vrachieru/rasa-model-server/releases/latest">
+    <a href="https://github.com/BIBA-GmbH/rasa-model-server">
         <img src="https://img.shields.io/badge/version-1.2.0-brightgreen.svg?style=flat-square" alt="Version">
     </a>
     <br/>
