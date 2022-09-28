@@ -4,13 +4,7 @@
     <img src="https://user-images.githubusercontent.com/5860071/61949755-7dbca580-afb4-11e9-87b6-1187933cccfb.png" width="200" border="0" alt="rasa-model-server">
     <br/>
     <a href="https://github.com/vrachieru/rasa-model-server/releases/latest">
-        <img src="https://img.shields.io/badge/version-1.0.0-brightgreen.svg?style=flat-square" alt="Version">
-    </a>
-    <a href="https://hub.docker.com/r/vrachieru/rasa-model-server/">
-        <img src="https://img.shields.io/docker/stars/vrachieru/rasa-model-server.svg?style=flat-square" />
-    </a>
-    <a href="https://hub.docker.com/r/vrachieru/rasa-model-server/">
-        <img src="https://img.shields.io/docker/pulls/vrachieru/rasa-model-server.svg?style=flat-square" />
+        <img src="https://img.shields.io/badge/version-1.2.0-brightgreen.svg?style=flat-square" alt="Version">
     </a>
     <br/>
     Simple webserver for externalizing RASA models.
